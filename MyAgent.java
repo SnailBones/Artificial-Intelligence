@@ -129,16 +129,28 @@ public class MyAgent extends BasicMarioAIAgent implements Agent
 	{
 		for (int r = 7; r<=9; r++){
 		//for (int r = 0; r<= 18; r++){
-			for (int c = 10; c<= 12; c++){
+			// for (int c = 10; c<= 12; c++){
 			//for (int c = 0; c<= 18; c++){	//avoid all things above
+				if (hasEnemy(r,9) || hasEnemy(r,10))
+					return true;
+			// }
+		}
+		return false;
+	}
+	//boolean retreating;
+
+	public boolean beastAbove()
+	{
+		for (int r = 7; r<=9; r++){
+		//for (int r = 0; r<= 18; r++){
+			//for (int c = 10; c<= 12; c++){
+			for (int c = 0; c<= 18; c++){	//avoid all things above
 				if (hasEnemy(r,c))
 					return true;
 			}
 		}
 		return false;
 	}
-	//boolean retreating;
-
 
 	// Actually perform an action by setting a slot in the action array to be true
 	public boolean[] getAction()
@@ -151,18 +163,24 @@ public class MyAgent extends BasicMarioAIAgent implements Agent
 		//action[Mario.KEY_SPEED] = beast_near;
 		//if (beast_near && isMarioAbleToShoot)
 		action[Mario.KEY_SPEED] = isMarioAbleToShoot;
-
+		action[Mario.KEY_RIGHT] = true;
+		action[Mario.KEY_LEFT]=true;
 		if (beastBeside())
 		{
 				System.out.println("going left");
 				action[Mario.KEY_RIGHT]=false;
+				if(isWall(9,8))
+					action[Mario.KEY_JUMP] = true;
 		}
-				action[Mario.KEY_LEFT]=true;
 		else
 		{
 			action[Mario.KEY_LEFT]=false;
 		}
-			action[Mario.KEY_RIGHT] = true;
+		if (beastAbove())
+		{
+			action[Mario.KEY_RIGHT] = false;
+			action[Mario.KEY_LEFT]=false;
+		}
 		if (beastBelow())
 		{
 			action[Mario.KEY_JUMP] = false;
